@@ -3,56 +3,52 @@ package first.robot.v3_Horse.subsystems.rollerfloor;
 import static org.wpilib.units.Units.Amps;
 import static org.wpilib.units.Units.Volts;
 
-import org.wpilib.hardware.bus.CANPort;
-import org.wpilib.math.system.DCMotor;
-import org.wpilib.units.Units;
-
-import org.wpilib.units.measure.Voltage;
-
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.team190.gompeilib.core.utility.control.CurrentLimits;
 import edu.wpi.team190.gompeilib.subsystems.generic.roller.GenericRollerConstants;
+import org.wpilib.hardware.bus.CANPort;
+import org.wpilib.math.system.DCMotor;
+import org.wpilib.units.Units;
+import org.wpilib.units.measure.Voltage;
 
 public class V3_HorseRollerFloorConstants {
 
-    public static final GenericRollerConstants ROLLER_FLOOR_CONSTANTS;
+  public static final GenericRollerConstants ROLLER_FLOOR_CONSTANTS;
 
-    public static final Voltage ROLLER_FLOOR_RUN_VOLTAGE;
-    public static final Voltage ROLLER_FLOOR_OVERRIDE_VOLTAGE;
-    public static final Voltage ROLLER_FLOOR_SLOW_VOLTAGE;
+  public static final Voltage ROLLER_FLOOR_RUN_VOLTAGE;
+  public static final Voltage ROLLER_FLOOR_OVERRIDE_VOLTAGE;
+  public static final Voltage ROLLER_FLOOR_SLOW_VOLTAGE;
 
-    static {
+  static {
+    ROLLER_FLOOR_RUN_VOLTAGE = Volts.of(12);
+    ROLLER_FLOOR_OVERRIDE_VOLTAGE = Volts.of(12);
+    ROLLER_FLOOR_SLOW_VOLTAGE = Volts.of(-1.5);
 
-        ROLLER_FLOOR_RUN_VOLTAGE = Volts.of(12);
-        ROLLER_FLOOR_OVERRIDE_VOLTAGE = Volts.of(12);
-        ROLLER_FLOOR_SLOW_VOLTAGE = Volts.of(-1.5);
+    ROLLER_FLOOR_CONSTANTS =
+        GenericRollerConstants.builder()
+            .withLeaderCANID(31)
+            .withCurrentLimits(
+                CurrentLimits.builder()
+                    .withSupplyCurrentLimit(Amps.of(40))
+                    .withStatorCurrentLimit(Amps.of(40))
+                    .build())
+            .withNeutralMode(NeutralModeValue.Coast)
+            .withRollerGearbox(DCMotor.getKrakenX60Foc(2))
+            .withRollerMotorGearRatio(84.0 / 16)
+            .withLeaderInvertedValue(InvertedValue.Clockwise_Positive)
+            .withMomentOfInertia(Units.KilogramSquareMeters.of(0.0001))
+            .withVoltageOffsetStep(Volts.of(1.0))
+            .withCanBus(new CANBus(CANPort.CAN_S3))
+            .withEnableFOC(true)
+            .withAlignedFollowerCANID(32)
+            .build();
+  }
 
-        ROLLER_FLOOR_CONSTANTS = GenericRollerConstants.builder()
-                .withLeaderCANID(31)
-                .withCurrentLimits(CurrentLimits.builder()
-                        .withSupplyCurrentLimit(Amps.of(40))
-                        .withStatorCurrentLimit(Amps.of(40))
-                        .build())
-                .withNeutralMode(NeutralModeValue.Coast)
-                .withRollerGearbox(DCMotor.getKrakenX60Foc(2))
-                .withRollerMotorGearRatio(84.0 / 16)
-                .withLeaderInvertedValue(InvertedValue.Clockwise_Positive)
-                .withMomentOfInertia(Units.KilogramSquareMeters.of(0.0001))
-                .withVoltageOffsetStep(Volts.of(1.0))
-                .withCanBus(new CANBus(CANPort.CAN_S3))
-                .withEnableFOC(true)
-                .withAlignedFollowerCANID(32)
-                .build();
-
-    }
-
-    public enum RollerFloorState {
-        RUN,
-        OVERRIDE,
-        STOP
-    }
-
+  public enum RollerFloorState {
+    RUN,
+    OVERRIDE,
+    STOP
+  }
 }
